@@ -1,4 +1,6 @@
 import React from 'react';
+import './Button.css'
+
 
 // @ts-ignore
 const Button = (props) => {
