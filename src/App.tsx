@@ -6,7 +6,7 @@ import ProductList from "./components/ProductList/ProductList";
 import Form from './components/Form/Form';
 
 // @ts-ignore
-const { tg} = useTelegram()
+const {tg} = useTelegram()
 
 
 function App() {
@@ -16,10 +16,10 @@ function App() {
 
     return (
         <div className="App">
-            <Header/>
+
             <Routes>
-                <Route index element={<ProductList/>}/>
-                <Route path={'/form'} element={<Form/>}/>
+                <Route index element={<ProductList />}/>
+                <Route path='/form' element={<Form />}/>
             </Routes>
         </div>
     );
