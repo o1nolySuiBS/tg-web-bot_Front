@@ -1,7 +1,14 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import ProductItem from '../../ProductItem/ProductItem';
-import './ProductList.css'
-import {useTelegram} from "../../hooks/useTelegram";
+import './ProductList.css';
+import { useTelegram } from "../../hooks/useTelegram";
+
+type Product = {
+    id: number;
+    title: string;
+    price: number;
+    description: string;
+};
 
 const products = [
     {
@@ -78,45 +85,46 @@ const products = [
     }
 ];
 
-const getTotalPrice = (items = []) => {
+const getTotalPrice = (items: Product[] = []) => {
     return items.reduce((acc, item) => {
-        return acc += item.price
-    }, 0)
+        return acc += item.price;
+    }, 0);
 }
 
-console.log(products);
-const [addedItems, setAddedItems] = useState([]);
-const {tg} = useTelegram()
-const onAdd = (product) => {
-    const alreadyAdded = addedItems.find(item => item.id === product.id);
-    let newItems = [];
+const ProductList: React.FC = () => {
+    const [addedItems, setAddedItems] = useState<Product[]>([]);
+    const { tg } = useTelegram();
 
-    if (alreadyAdded) {
-        newItems = addedItems.filter(item => item.id !== product.id);
-    } else {
-        newItems = [...addedItems, product]
-    }
+    const onAdd = (product: Product) => {
+        const alreadyAdded = addedItems.find(item => item.id === product.id);
+        let newItems: Product[];
 
-    setAddedItems(newItems)
+        if (alreadyAdded) {
+            newItems = addedItems.filter(item => item.id !== product.id);
+        } else {
+            newItems = [...addedItems, product];
+        }
 
-    if (newItems.length === 0) {
-        tg.MainButton.hide()
-    } else {
-        tg.MainButton.show()
-        tg.MainButton.setParams({
-            text: `Купити ${getTotalPrice(newItems)}`
-        })
-    }
-}
+        setAddedItems(newItems);
 
-const ProductList = () => {
+        if (newItems.length === 0) {
+            tg.MainButton.hide();
+        } else {
+            tg.MainButton.show();
+            tg.MainButton.setParams({
+                text: `Купити ${getTotalPrice(newItems)}`
+            });
+        }
+    };
+
     return (
         <div className={'list'}>
             {products.map(item => (
                 <ProductItem
+                    key={item.id} // додаємо ключ для унікальності
                     product={item}
                     onAdd={onAdd}
-                    clasName={'item'}
+                    className={'item'}
                 />
             ))}
         </div>
