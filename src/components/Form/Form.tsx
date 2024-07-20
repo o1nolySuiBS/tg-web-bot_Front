@@ -1,18 +1,36 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import './Form.css';
 import {useTelegram} from "../../hooks/useTelegram";
+import {Telegram} from "telegraf";
+import {callback} from "telegraf/typings/button";
 
 const Form = () => {
     const [country, setCountry] = useState('');
     const [street, setStreet] = useState('');
     const [subject, setSubject] = useState('physical');
-    const {tg} = useTelegram(); // Виправлено доступ до tg
+    const {tg} = useTelegram();
+
+    const onSendData = useCallback(()=>{
+    const data = {
+        country,
+        street,
+        subject
+    }
+    tg.sendData(JSON.stringify(data))
+    }, [])
+
+    useEffect(() => {
+        tg.onEvent('mainButtonClicked', callback)
+        return()=>{
+        tg.offEvent('mainButtonClicked', onSendData)
+        }
+    }, []);
 
     useEffect(() => {
         tg.MainButton.setParams({
             text: 'Відправити дані'
         });
-    }, [tg]);
+    }, []);
 
     useEffect(() => {
         if (!street || !country) {
@@ -20,7 +38,7 @@ const Form = () => {
         } else {
             tg.MainButton.show();
         }
-    }, [country, street, tg]);
+    }, [country, street]);
 
     const onChangeCountry = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setCountry(e.target.value);
