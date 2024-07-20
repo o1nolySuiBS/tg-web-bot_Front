@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ProductItem from '../../ProductItem/ProductItem';
 import './ProductList.css';
 import { useTelegram } from "../../hooks/useTelegram";
+import axios from 'axios';
 
 type Product = {
     id: number;
@@ -93,7 +94,29 @@ const getTotalPrice = (items: Product[] = []) => {
 
 const ProductList: React.FC = () => {
     const [addedItems, setAddedItems] = useState<Product[]>([]);
-    const { tg } = useTelegram();
+    const { tg, queryId } = useTelegram();
+
+    const onSendData = useCallback(() => {
+        const data = {
+            products:addedItems,
+            totalPrice: getTotalPrice(addedItems),
+            queryId,
+        };
+        fetch('http://localhost:8000', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+    }, []);
+
+    useEffect(() => {
+        tg.onEvent('mainButtonClicked', onSendData);
+        return () => {
+            tg.offEvent('mainButtonClicked', onSendData);
+        };
+    }, [onSendData]);
 
     const onAdd = (product: Product) => {
         const alreadyAdded = addedItems.find(item => item.id === product.id);
@@ -121,7 +144,7 @@ const ProductList: React.FC = () => {
         <div className={'list'}>
             {products.map(item => (
                 <ProductItem
-                    key={item.id} // додаємо ключ для унікальності
+                    key={item.id}
                     product={item}
                     onAdd={onAdd}
                     className={'item'}
