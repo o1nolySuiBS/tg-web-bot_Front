@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../components/Button/Button';
+import './ProductItem.css'
 
-import '../ProductItem.css';
 
 type Product = {
     id: number;
