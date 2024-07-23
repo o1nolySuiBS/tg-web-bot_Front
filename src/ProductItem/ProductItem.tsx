@@ -31,7 +31,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, className = '', onAd
                 <span>Вартість:<b>{product.price}</b></span>
                 <div>
                     <Button className={'add-btn'} onClick={onAddHandler}>
-                        Добавити в корзину
+                        Добавити в корзинку
                     </Button>
                 </div>
             </div>
