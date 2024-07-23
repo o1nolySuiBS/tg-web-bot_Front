@@ -7,6 +7,6 @@ const Button = (props) => {
     return (
             <button {...props} className={'button '+props.className} />
     );
-};
+};//кнопка 11.2.1111
 
 export default Button;
